@@ -11,11 +11,10 @@ pipeline {
             agent {
                 dockerContainer {
                     image 'maven:3.9.6-eclipse-temurin-17-alpine'
-                    args '-v $HOME/.m2:/root/.m2'
                 }
             }
             steps {
-                echo "Building application..."
+                echo "Compiling..."
                 sh "mvn -B -DskipTests clean compile"
             }
         }
@@ -24,7 +23,6 @@ pipeline {
             agent {
                 dockerContainer {
                     image 'maven:3.9.6-eclipse-temurin-17-alpine'
-                    args '-v $HOME/.m2:/root/.m2'
                 }
             }
             steps {
@@ -35,7 +33,6 @@ pipeline {
 
         stage('Package & Docker') {
             when { branch 'main' }
-            agent any
 
             parallel {
 
@@ -43,11 +40,10 @@ pipeline {
                     agent {
                         dockerContainer {
                             image 'maven:3.9.6-eclipse-temurin-17-alpine'
-                            args '-v $HOME/.m2:/root/.m2'
                         }
                     }
                     steps {
-                        echo "Packaging JAR..."
+                        echo "Packaging..."
                         sh "mvn -B -DskipTests package"
                         archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
                     }
@@ -67,13 +63,14 @@ pipeline {
                         }
                     }
                 }
+
             }
         }
     }
 
     post {
         always {
-            echo "Pipeline Completed!"
+            echo "Pipeline Completed"
         }
     }
 }
