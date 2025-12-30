@@ -34,7 +34,7 @@ pipeline {
 
         stage('Package') {
             when { branch 'main' }
-            agent any
+
             parallel {
 
                 stage('Maven Package') {
@@ -62,9 +62,7 @@ pipeline {
                     agent any
                     steps {
                         script {
-
                             docker.withRegistry('https://index.docker.io/v1/', 'dockerlogin') {
-
                                 def commitHash = env.GIT_COMMIT.take(7)
                                 def dockerImage = docker.build("initcron/sysfoo:${commitHash}", ".")
 
