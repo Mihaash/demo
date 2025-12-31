@@ -1,5 +1,5 @@
 pipeline {
-    agent none
+    agent any
 
     tools {
         maven 'Maven 3.9.12'
@@ -8,11 +8,6 @@ pipeline {
     stages {
 
         stage('Build') {
-            agent {
-                dockerContainer {
-                    image 'maven:3.9.6-eclipse-temurin-17-alpine'
-                }
-            }
             steps {
                 echo "Compiling..."
                 sh "mvn -B -DskipTests clean compile"
@@ -20,11 +15,6 @@ pipeline {
         }
 
         stage('Test') {
-            agent {
-                dockerContainer {
-                    image 'maven:3.9.6-eclipse-temurin-17-alpine'
-                }
-            }
             steps {
                 echo "Running tests..."
                 sh "mvn -B test"
@@ -33,15 +23,9 @@ pipeline {
 
         stage('Package & Docker') {
             when { branch 'main' }
-
             parallel {
 
                 stage('Maven Package') {
-                    agent {
-                        dockerContainer {
-                            image 'maven:3.9.6-eclipse-temurin-17-alpine'
-                        }
-                    }
                     steps {
                         echo "Packaging..."
                         sh "mvn -B -DskipTests package"
@@ -50,7 +34,6 @@ pipeline {
                 }
 
                 stage('Docker Build & Push') {
-                    agent any
                     steps {
                         script {
                             def tag = env.GIT_COMMIT.take(7)
@@ -63,7 +46,6 @@ pipeline {
                         }
                     }
                 }
-
             }
         }
     }
