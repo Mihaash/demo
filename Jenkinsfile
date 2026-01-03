@@ -2,23 +2,23 @@ pipeline {
     agent any
 
     stages {
-        stage('one') {
+        stage('build') {
             steps {
-                echo 'step 1'
+                sh 'mvn complie'
             }
         }
 
-        stage('two') {
+        stage('test') {
             steps {
                 echo 'step 2'
-                sleep 9
+                sh 'mvn clean test '
             }
         }
 
-        stage('three') {
+        stage('package') {
             steps {
                 echo 'step 3'
-                sleep 5
+                sh 'mvn package -DskipTests'
             }
         }
     }
