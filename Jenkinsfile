@@ -8,7 +8,7 @@ tools{
         stage('build') {
             steps {
                 echo 'building '
-                sh 'mvn complie'
+                sh 'mvn compile'
             }
         }
 
